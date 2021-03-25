@@ -1,4 +1,6 @@
 # BotComplexity
+https://twitter.com/BotComplexity
+
 Twitter bot that tweets when a researcher I'm interested in publishes a new paper
 
 It reads authors from an authors.csv file and searches Google Scholar for publications, storing previously scraped publications in a pubs.csv file. If a new pub is found, it tweets about it.
