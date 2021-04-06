@@ -8,8 +8,8 @@ import sys
 currentYear = datetime.datetime.now().year
 
 def create_api():
-    auth = tweepy.OAuthHandler("REPLACE_ME", "REPLACE_ME")
-    auth.set_access_token('REPLACE_ME','REPLACE_ME')
+    auth = tweepy.OAuthHandler("bWolBkowuLuK8l2cnjieLeTx1", "1dbo8bAMcYtz1vm7BHfG0KT4YgwE5GLuCTtZ3IRrucWJPcgFOk")
+    auth.set_access_token('1349447540870160384-BG8JC2FOv7onRreRDygzg2hscYtzgC','2SrOvc2mB0GnqIvD8fhBO58dQ0HJIJjD9rA8ig6dTzeIV')
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     try:
         api.verify_credentials()
@@ -21,16 +21,31 @@ def create_api():
 def postTweet(tweet,api):
     api.update_status(tweet)
     
-def composeTweet(authorName, pubTitle, pub):
+def composeTweet(authorName, authorHandles_dic, pubTitle, pub):
     pub = scholarly.fill(pub)
     pubURL = pub['pub_url']
     if 'pub_year' in pub['bib'].keys():
         if pub['bib']['pub_year'] == str(currentYear):
-            return '[' + authorName + ']' + just published a new paper: "' + pubTitle + '"\n' + pubURL
+            if authorName in authorHandles_dic.keys():
+                return pubURL, '[' + authorName + ']' + ' just published a new paper: "' + pubTitle + '"\n' + pubURL + '\n' + authorHandles_dic[authorName]
+            else:
+                return pubURL, '[' + authorName + ']' + ' just published a new paper: "' + pubTitle + '"\n' + pubURL
+    return None
     
 with open('C:/Users/Colton/Github/ScholarBot/authors.csv') as authorFile:
     authors = authorFile.readlines()
-    authorNames = [item.strip() for item in authors]
+    lines = [item.strip() for item in authors]
+    authorNames = []
+    authorHandles_dic = {}
+    for line in lines:
+        if ',' in line and '@' in line:
+            name = line[:line.find(',')]
+            handle = line[line.find('@'):]
+            authorNames.append(name)
+            authorHandles_dic[name] = handle
+        else:
+            authorNames.append(line)
+
 with open('C:/Users/Colton/Github/ScholarBot/pubs.csv') as pubFile:
     pubs = pubFile.readlines()
     pubIDs = [item.strip() for item in pubs]
@@ -47,9 +62,10 @@ for authorName in authorNames:
         pubID = authPubID[iColon+1:]
         pubTitle = pub['bib']['title']
         if not pubID in pubIDs:
-            tweet = composeTweet(authorName, pubTitle, pub)
+            pubURL, tweet = composeTweet(authorName,authorHandles_dic, pubTitle, pub)
             if not tweet is None:
                 postTweet(tweet,api)
+                print(tweet)
             newPubIDs.append(pubID)
 
 newPubIDs = list(dict.fromkeys(newPubIDs))
