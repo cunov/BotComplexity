@@ -8,8 +8,8 @@ import sys
 currentYear = datetime.datetime.now().year
 
 def create_api():
-    auth = tweepy.OAuthHandler("bWolBkowuLuK8l2cnjieLeTx1", "1dbo8bAMcYtz1vm7BHfG0KT4YgwE5GLuCTtZ3IRrucWJPcgFOk")
-    auth.set_access_token('1349447540870160384-BG8JC2FOv7onRreRDygzg2hscYtzgC','2SrOvc2mB0GnqIvD8fhBO58dQ0HJIJjD9rA8ig6dTzeIV')
+    auth = tweepy.OAuthHandler("REPLACE_ME", "REPLACE_ME")
+    auth.set_access_token('REPLACE_ME','REPLACE_ME')
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     try:
         api.verify_credentials()
